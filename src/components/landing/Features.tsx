@@ -50,7 +50,7 @@ export default function FeaturesSection() {
         <div className="mx-auto max-w-2xl text-center">
 
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-green-600">
-            Fonctionnalités
+            SOLUTIONS
           </p>
 
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 md:text-5xl">

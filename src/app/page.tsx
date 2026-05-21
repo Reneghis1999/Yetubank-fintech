@@ -5,6 +5,7 @@ import Footer from "@/components/landing/Footer"
 import Security from "@/components/landing/Security"
 import CTA from "@/components/landing/CTA"
 import Reasons from "@/components/landing/Reasons"
+import Infra from "@/components/landing/Infra"
 
 
 export default function HomePage() {
@@ -14,6 +15,7 @@ export default function HomePage() {
       <Hero />
       <Security />
       <Features />
+      <Infra />
       <Reasons />
       <CTA />
       <Footer />

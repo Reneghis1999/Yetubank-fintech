@@ -51,8 +51,8 @@ export default function Navbar() {
 
       {/* CTA */}
       <div className="hidden md:flex">
-        <Link href="/register">
-          <Button className="rounded-full bg-black px-7 py-5 text-white transition-colors duration-300 hover:bg-green-600">
+        <Link href="/auth/register">
+          <Button className="rounded-full bg-black px-7 py-5 text-white transition-colors duration-300 cursor-pointer">
             Ouvrir un compte gratuit
           </Button>
         </Link>

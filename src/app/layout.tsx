@@ -9,7 +9,7 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  title: "YetuBank - Digital Banking for Africa",
+  title: "YetuBank - Banque Digitale pour l'Afrique",
   description:
     "YetuBank est une plateforme de banque digitale moderne permettant de gérer, envoyer et recevoir de l'argent facilement et en toute sécurité en Afrique.",
   keywords: [
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   authors: [{ name: "YetuBank Team" }],
   creator: "YetuBank",
   openGraph: {
-    title: "YetuBank - Digital Banking for Africa",
+    title: "YetuBank - Banque Digitale pour l'Afrique",
     description:
       "Gérez votre argent facilement avec YetuBank, une solution fintech moderne pour l'Afrique.",
     type: "website",
