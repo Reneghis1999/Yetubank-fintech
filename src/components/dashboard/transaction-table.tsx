@@ -19,12 +19,12 @@ type Transaction = {
 export default function TransactionTable() {
   return (
     <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
-      
+
       <table className="w-full min-w-[600px] border-collapse">
-        
+
         <thead>
           <tr className="border-b bg-gray-50">
-            
+
             <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
               Type
             </th>
@@ -45,26 +45,23 @@ export default function TransactionTable() {
         </thead>
 
         <tbody>
+          {transactions.map((transaction) => {
 
-          {transactions.map((transaction: Transaction) => {
-            const isDeposit =
-              transaction.type === "deposit"
+            const isDeposit = transaction.type === "deposit"
 
             return (
               <tr
                 key={transaction.id}
                 className="border-b last:border-none transition-colors hover:bg-gray-50"
               >
-                
+
                 {/* TYPE */}
                 <td className="px-6 py-5">
                   <div className="flex items-center gap-3">
-                    
+
                     <div
                       className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-                        isDeposit
-                          ? "bg-green-100"
-                          : "bg-red-100"
+                        isDeposit ? "bg-green-100" : "bg-red-100"
                       }`}
                     >
                       {isDeposit ? (
@@ -76,9 +73,7 @@ export default function TransactionTable() {
 
                     <div>
                       <p className="font-medium text-gray-900">
-                        {isDeposit
-                          ? "Dépôt"
-                          : "Retrait"}
+                        {isDeposit ? "Dépôt" : "Retrait"}
                       </p>
 
                       <p className="text-sm text-gray-500">
@@ -97,9 +92,7 @@ export default function TransactionTable() {
                 {/* AMOUNT */}
                 <td
                   className={`px-6 py-5 text-right text-sm font-semibold ${
-                    isDeposit
-                      ? "text-green-600"
-                      : "text-red-500"
+                    isDeposit ? "text-green-600" : "text-red-500"
                   }`}
                 >
                   {isDeposit ? "+" : "-"}
@@ -116,8 +109,8 @@ export default function TransactionTable() {
               </tr>
             )
           })}
-
         </tbody>
+
       </table>
     </div>
   )
