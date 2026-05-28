@@ -1,6 +1,6 @@
 // lib/auth.ts
 
-export type User = {
+export interface User {
   id: string
   email: string
 }
@@ -14,7 +14,6 @@ export async function registerUser(
   email: string,
   password: string
 ): Promise<User> {
-  // simulation API delay
   await new Promise((resolve) => setTimeout(resolve, 1000))
 
   const user: User = {
@@ -22,7 +21,10 @@ export async function registerUser(
     email,
   }
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(user))
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(user)
+  )
 
   return user
 }
@@ -34,7 +36,6 @@ export async function loginUser(
   email: string,
   password: string
 ): Promise<User> {
-  // simulation API delay
   await new Promise((resolve) => setTimeout(resolve, 1000))
 
   const user: User = {
@@ -42,33 +43,44 @@ export async function loginUser(
     email,
   }
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(user))
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(user)
+  )
 
   return user
 }
 
 /**
- * Récupère l'utilisateur connecté
+ * Récupère utilisateur connecté
  */
 export function getCurrentUser(): User | null {
   if (typeof window === "undefined") {
     return null
   }
 
-  const user = localStorage.getItem(STORAGE_KEY)
+  const storedUser = localStorage.getItem(STORAGE_KEY)
 
-  if (!user) {
+  if (!storedUser) {
     return null
   }
 
-  return JSON.parse(user)
+  try {
+    const parsedUser: User = JSON.parse(storedUser)
+
+    return parsedUser
+  } catch (error) {
+    console.error("Erreur parsing user:", error)
+
+    return null
+  }
 }
 
 /**
- * Vérifie si l'utilisateur est connecté
+ * Vérifie authentification
  */
 export function isAuthenticated(): boolean {
-  return !!getCurrentUser()
+  return getCurrentUser() !== null
 }
 
 /**

@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+ 💳 YetuBank Fintech
 
-## Getting Started
+YetuBank est une **application web de banque digitale (frontend-first)** conçue pour simuler une plateforme bancaire moderne avec authentification, dashboard utilisateur et gestion financière.
 
-First, run the development server:
+Le projet est actuellement en phase de développement frontend avec une logique d’authentification mockée et une architecture prête pour une future API backend.
+
+---
+
+##  Stack technique
+
+- **Next.js 14+ (App Router)**
+- **TypeScript**
+- **React Hook Form**
+- **Zod (validation)**
+- **Tailwind CSS**
+- **shadcn/ui**
+- **Sonner (notifications)**
+
+---
+
+##  Fonctionnalités actuelles
+
+###  Authentification (Mock)
+- Inscription utilisateur (register)
+- Connexion utilisateur (login)
+- Mot de passe oublié (UI)
+- Stockage local via `localStorage`
+- Simulation d’API
+
+###  Navigation
+- Redirection automatique après login/register
+- Protection basique des routes (frontend guard)
+
+###  UI/UX
+- Design moderne type fintech
+- Composants shadcn/ui
+- Interface responsive
+- Feedback utilisateur avec notifications
+
+---
+
+##  Architecture du projet
+
+
+/app
+/auth
+/login
+/register
+/forgot-password
+/dashboard (à venir)
+
+/components
+/auth
+login-form.tsx
+register-form.tsx
+
+/lib
+auth.ts (mock authentication logic)
+
+
+---
+
+##  Système d’auth actuel
+
+Le système d’authentification est simulé côté frontend :
+
+- Création d’utilisateur stocké dans `localStorage`
+- Connexion basée sur données mockées
+- Aucun backend connecté pour le moment
+
+ Ceci est un système de démonstration uniquement.
+
+---
+
+##  Prochaines fonctionnalités
+
+###  Dashboard bancaire
+- Solde utilisateur
+- Cartes statistiques (revenus / dépenses)
+- Transactions mockées
+- Graphiques financiers
+- Sidebar de navigation
+
+###  Sécurité (future)
+- Middleware de protection de routes
+- Auth backend (Laravel / API)
+- JWT ou session cookies
+
+###  KYC System (future)
+- Vérification identité utilisateur
+- Statut utilisateur (unverified / verified)
+
+---
+
+##  Installation
 
 ```bash
+git clone https://github.com/ton-repo/yetubank.git
+cd yetubank
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+▶️ Lancer le projet
+npm run dev
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Puis ouvrir :
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+http://localhost:3000
+ Objectif du projet
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+YetuBank a pour objectif de simuler une néobanque moderne afin de :
 
-## Learn More
+Développer des compétences avancées en frontend
+Construire une UI/UX fintech réaliste
+Préparer une architecture scalable full-stack
+Servir de portfolio professionnel
+ Status du projet
 
-To learn more about Next.js, take a look at the following resources:
+ En développement (Phase 1 : Auth + UI)
+🔜 Phase 2 : Dashboard bancaire
+🔜 Phase 3 : Backend API + vraie auth
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

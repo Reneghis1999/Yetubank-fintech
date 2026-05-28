@@ -1,5 +1,3 @@
-// components/auth/register-form.tsx
-
 "use client"
 
 import Image from "next/image"
@@ -16,25 +14,35 @@ import {
   ShieldCheck,
 } from "lucide-react"
 
+import { toast } from "sonner"
+
+import { registerUser } from "@/lib/auth"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-import { registerUser } from "@/lib/auth"
-
 const registerSchema = z
   .object({
     email: z.string().email("Email invalide"),
-    password: z.string().min(6, "Minimum 6 caractères"),
+    password: z
+      .string()
+      .min(6, "Minimum 6 caractères"),
     confirmPassword: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Les mots de passe ne correspondent pas",
-    path: ["confirmPassword"],
-  })
+  .refine(
+    (data) => data.password === data.confirmPassword,
+    {
+      message:
+        "Les mots de passe ne correspondent pas",
+      path: ["confirmPassword"],
+    }
+  )
 
-type RegisterFormData = z.infer<typeof registerSchema>
+type RegisterFormData = z.infer<
+  typeof registerSchema
+>
 
 export default function RegisterForm() {
   const router = useRouter()
@@ -47,22 +55,40 @@ export default function RegisterForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: {
+      errors,
+      isSubmitting,
+    },
   } = form
 
-  const onSubmit = async (data: RegisterFormData) => {
-    await registerUser(data.email, data.password)
+  const onSubmit = async (
+    data: RegisterFormData
+  ) => {
+    try {
+      await registerUser(
+        data.email,
+        data.password
+      )
 
-    router.push("/dashboard")
+      toast.success(
+        "Compte créé avec succès"
+      )
+
+      router.push("/dashboard")
+    } catch (error) {
+      toast.error(
+        "Erreur lors de la création du compte"
+      )
+    }
   }
 
   return (
-    <main className="relative min-h-screen flex items-center justify-center bg-[#f7f8fa] px-6 py-10">
-
+    <main className="relative flex min-h-screen items-center justify-center bg-[#f7f8fa] px-6 py-10">
+      
       {/* BACK HOME */}
       <Link
         href="/"
-        className="fixed top-8 left-8 flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-black transition"
+        className="fixed top-8 left-8 flex items-center gap-2 text-sm font-medium text-gray-600 transition hover:text-black"
       >
         <ArrowLeft className="h-4 w-4" />
         Retour à l’accueil
@@ -73,7 +99,7 @@ export default function RegisterForm() {
         <CardContent className="p-8">
 
           {/* LOGO */}
-          <div className="flex justify-center mb-8">
+          <div className="mb-8 flex justify-center">
             <Link href="/">
               <Image
                 src="/images/yetubank-logo-light.svg"
@@ -86,7 +112,7 @@ export default function RegisterForm() {
           </div>
 
           {/* HEADER */}
-          <div className="text-center mb-8">
+          <div className="mb-8 text-center">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100">
               <ShieldCheck className="h-7 w-7 text-green-600" />
             </div>
@@ -96,12 +122,16 @@ export default function RegisterForm() {
             </h1>
 
             <p className="mt-2 text-sm text-muted-foreground">
-              Rejoignez YetuBank et gérez vos finances facilement.
+              Rejoignez YetuBank et gérez vos
+              finances facilement.
             </p>
           </div>
 
           {/* FORM */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-5"
+          >
 
             {/* EMAIL */}
             <div className="space-y-2">
@@ -113,7 +143,7 @@ export default function RegisterForm() {
                 <Input
                   type="email"
                   placeholder="exemple@email.com"
-                  className="h-12 pl-10 rounded-xl"
+                  className="h-12 rounded-xl pl-10"
                   {...register("email")}
                 />
               </div>
@@ -135,7 +165,7 @@ export default function RegisterForm() {
                 <Input
                   type="password"
                   placeholder="••••••••"
-                  className="h-12 pl-10 rounded-xl"
+                  className="h-12 rounded-xl pl-10"
                   {...register("password")}
                 />
               </div>
@@ -149,7 +179,9 @@ export default function RegisterForm() {
 
             {/* CONFIRM PASSWORD */}
             <div className="space-y-2">
-              <Label>Confirmer le mot de passe</Label>
+              <Label>
+                Confirmer le mot de passe
+              </Label>
 
               <div className="relative">
                 <Lock className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
@@ -157,32 +189,43 @@ export default function RegisterForm() {
                 <Input
                   type="password"
                   placeholder="••••••••"
-                  className="h-12 pl-10 rounded-xl"
-                  {...register("confirmPassword")}
+                  className="h-12 rounded-xl pl-10"
+                  {...register(
+                    "confirmPassword"
+                  )}
                 />
               </div>
 
               {errors.confirmPassword && (
                 <p className="text-sm text-red-500">
-                  {errors.confirmPassword.message}
+                  {
+                    errors.confirmPassword
+                      .message
+                  }
                 </p>
               )}
             </div>
 
-            {/* BUTTON */}
+            {/* SUBMIT BUTTON */}
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="h-12 w-full rounded-xl bg-black text-white hover:bg-green-600 transition"
+              className="h-12 w-full rounded-xl bg-black text-white transition cursor-pointer "
             >
-              {isSubmitting ? "Création..." : "Créer un compte"}
+              {isSubmitting
+                ? "Création..."
+                : "Créer un compte"}
             </Button>
+
           </form>
 
           {/* FOOTER */}
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Déjà un compte ?{" "}
-            <Link href="/auth/login" className="text-green-600 hover:underline">
+            <Link
+              href="/auth/login"
+              className="text-green-600 hover:underline"
+            >
               Se connecter
             </Link>
           </p>

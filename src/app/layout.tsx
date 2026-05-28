@@ -1,5 +1,7 @@
 import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
+import { Toaster } from "sonner"
+
 import "./globals.css"
 
 const poppins = Poppins({
@@ -30,14 +32,28 @@ export const metadata: Metadata = {
   },
 }
 
+type RootLayoutProps = {
+  children: React.ReactNode
+}
+
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: RootLayoutProps) {
   return (
-    <html lang="fr" className={`${poppins.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html
+      lang="fr"
+      className={`${poppins.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">
+        {children}
+
+        {/* GLOBAL TOASTER */}
+        <Toaster
+          richColors
+          position="top-right"
+          closeButton
+        />
+      </body>
     </html>
   )
 }
