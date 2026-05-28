@@ -1,4 +1,13 @@
-export const transactions = [
+type TransactionType = "deposit" | "withdraw"
+
+type Transaction = {
+  id: number
+  type: TransactionType
+  amount: number
+  date: string
+}
+
+export const transactions: Transaction[] = [
   {
     id: 1,
     type: "deposit",
