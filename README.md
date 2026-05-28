@@ -1,4 +1,6 @@
  💳 YetuBank Fintech
+ <img width="1910" height="769" alt="Capture d&#39;écran 2026-05-28 142815" src="https://github.com/user-attachments/assets/3399b7ff-3cf7-4315-9c78-15b7859d14f7" />
+
 
 YetuBank est une **application web de banque digitale (frontend-first)** conçue pour simuler une plateforme bancaire moderne avec authentification, dashboard utilisateur et gestion financière.
 
