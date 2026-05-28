@@ -1,5 +1,3 @@
-// components/auth/login-form.tsx
-
 "use client"
 
 import Image from "next/image"
@@ -16,19 +14,25 @@ import {
   ShieldCheck,
 } from "lucide-react"
 
+import { toast } from "sonner"
+
+import { loginUser } from "@/lib/auth"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-import { loginUser } from "@/lib/auth"
-
 const loginSchema = z.object({
   email: z.string().email("Email invalide"),
-  password: z.string().min(6, "Minimum 6 caractères"),
+  password: z
+    .string()
+    .min(6, "Minimum 6 caractères"),
 })
 
-type LoginFormData = z.infer<typeof loginSchema>
+type LoginFormData = z.infer<
+  typeof loginSchema
+>
 
 export default function LoginForm() {
   const router = useRouter()
@@ -41,13 +45,31 @@ export default function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: {
+      errors,
+      isSubmitting,
+    },
   } = form
 
-  const onSubmit = async (data: LoginFormData) => {
-    await loginUser(data.email, data.password)
+  const onSubmit = async (
+    data: LoginFormData
+  ) => {
+    try {
+      await loginUser(
+        data.email,
+        data.password
+      )
 
-    router.push("/dashboard")
+      toast.success(
+        "Connexion réussie"
+      )
+
+      router.push("/dashboard")
+    } catch (error) {
+      toast.error(
+        "Erreur lors de la connexion"
+      )
+    }
   }
 
   return (
@@ -56,7 +78,7 @@ export default function LoginForm() {
       {/* BACK HOME */}
       <Link
         href="/"
-        className="fixed top-8 left-8 flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-black transition"
+        className="fixed top-8 left-8 flex items-center gap-2 text-sm font-medium text-gray-600 transition hover:text-black"
       >
         <ArrowLeft className="h-4 w-4" />
         Retour à l’accueil
@@ -67,7 +89,7 @@ export default function LoginForm() {
         <CardContent className="p-8">
 
           {/* LOGO */}
-          <div className="flex justify-center mb-8">
+          <div className="mb-8 flex justify-center">
             <Link href="/">
               <Image
                 src="/images/yetubank-logo-light.svg"
@@ -80,7 +102,7 @@ export default function LoginForm() {
           </div>
 
           {/* HEADER */}
-          <div className="text-center mb-8">
+          <div className="mb-8 text-center">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100">
               <ShieldCheck className="h-7 w-7 text-green-600" />
             </div>
@@ -90,12 +112,16 @@ export default function LoginForm() {
             </h1>
 
             <p className="mt-2 text-sm text-muted-foreground">
-              Connectez-vous à votre espace YetuBank.
+              Connectez-vous à votre espace
+              YetuBank.
             </p>
           </div>
 
           {/* FORM */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-5"
+          >
 
             {/* EMAIL */}
             <div className="space-y-2">
@@ -107,7 +133,7 @@ export default function LoginForm() {
                 <Input
                   type="email"
                   placeholder="exemple@email.com"
-                  className="h-12 pl-10 rounded-xl"
+                  className="h-12 rounded-xl pl-10"
                   {...register("email")}
                 />
               </div>
@@ -121,8 +147,10 @@ export default function LoginForm() {
 
             {/* PASSWORD */}
             <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <Label>Mot de passe</Label>
+              <div className="flex items-center justify-between">
+                <Label>
+                  Mot de passe
+                </Label>
 
                 <Link
                   href="/auth/forgot-password"
@@ -138,7 +166,7 @@ export default function LoginForm() {
                 <Input
                   type="password"
                   placeholder="••••••••"
-                  className="h-12 pl-10 rounded-xl"
+                  className="h-12 rounded-xl pl-10"
                   {...register("password")}
                 />
               </div>
@@ -150,13 +178,15 @@ export default function LoginForm() {
               )}
             </div>
 
-            {/* BUTTON */}
+            {/* SUBMIT BUTTON */}
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="h-12 w-full bg-black text-white rounded-xl hover:bg-green-600 transition"
+              className="h-12 w-full rounded-xl bg-black text-white transition  cursor-pointer"
             >
-              {isSubmitting ? "Connexion..." : "Se connecter"}
+              {isSubmitting
+                ? "Connexion..."
+                : "Se connecter"}
             </Button>
 
           </form>
@@ -164,7 +194,10 @@ export default function LoginForm() {
           {/* FOOTER */}
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Pas de compte ?{" "}
-            <Link href="/auth/register" className="text-green-600 hover:underline">
+            <Link
+              href="/auth/register"
+              className="text-green-600 hover:underline"
+            >
               Créer un compte
             </Link>
           </p>
