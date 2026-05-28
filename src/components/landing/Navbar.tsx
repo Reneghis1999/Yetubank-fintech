@@ -104,7 +104,7 @@ export default function Navbar() {
 
         {/* CTA MOBILE */}
         <div className="mt-10">
-          <Link href="/register" onClick={() => setOpen(false)}>
+          <Link href="/auth/register" onClick={() => setOpen(false)}>
             <Button className="rounded-full bg-black px-8 text-white transition-colors duration-300 hover:bg-green-600">
               Ouvrir un compte gratuit
             </Button>
