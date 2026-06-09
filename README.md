@@ -1,5 +1,4 @@
  💳 YetuBank Fintech
- <img width="1917" height="870" alt="Capture d&#39;écran 2026-05-28 145822" src="https://github.com/user-attachments/assets/02f4e972-5ba7-45fd-9031-40f89df8ca12" />
 
  <img width="1910" height="769" alt="Capture d&#39;écran 2026-05-28 142815" src="https://github.com/user-attachments/assets/3399b7ff-3cf7-4315-9c78-15b7859d14f7" />
 
