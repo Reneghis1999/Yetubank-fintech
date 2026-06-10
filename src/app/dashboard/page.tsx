@@ -8,21 +8,77 @@ import {
   Wallet,
 } from "lucide-react"
 
-import { getCurrentUser } from "@/lib/auth"
-import type { User } from "@/lib/auth"
+import {
+  getCurrentUser,
+  getAccount,
+  getTransactions,
+  getDashboardStats,
+} from "@/lib/auth"
 
-import { transactions } from "@/lib/mock/transactions"
+import type {
+  User,
+  Account,
+  Transaction,
+  DashboardStats,
+} from "@/lib/auth"
 
 export default function DashboardPage() {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] =
+    useState<User | null>(null)
+
+  const [account, setAccount] =
+    useState<Account | null>(null)
+
+  const [transactions, setTransactions] =
+    useState<Transaction[]>([])
+
+  const [stats, setStats] =
+  useState<DashboardStats | null>(null)
+
+  const [loading, setLoading] =
+    useState(true)
 
   useEffect(() => {
-    const currentUser = getCurrentUser()
+    async function fetchData() {
+      try {
+        const currentUser =
+          await getCurrentUser()
 
-    setUser(currentUser)
+        const currentAccount =
+          await getAccount()
+
+        const transactionsData =
+          await getTransactions()
+
+        const statsData =
+          await getDashboardStats()
+
+
+        console.log(
+          "Transactions:",
+          transactionsData
+        )
+
+        setUser(currentUser)
+        setAccount(currentAccount)
+        setStats(statsData)
+        // IMPORTANT
+        setTransactions(
+          Array.isArray(transactionsData)
+            ? transactionsData
+            : transactionsData.results || []
+        )
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
   }, [])
 
-  if (!user) {
+  if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <p className="text-gray-500">
@@ -32,7 +88,17 @@ export default function DashboardPage() {
     )
   }
 
-  const balance = 125000
+  if (!user || !account) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <p className="text-red-500">
+          Impossible de charger le dashboard
+        </p>
+      </div>
+    )
+  }
+
+  const balance = account.balance
 
   return (
     <div className="space-y-8">
@@ -58,7 +124,8 @@ export default function DashboardPage() {
             </p>
 
             <h2 className="mt-1 text-3xl font-bold text-gray-900">
-              {balance.toLocaleString()} XOF
+              {Number(balance).toLocaleString()}{" "}
+              {account.currency}
             </h2>
           </div>
 
@@ -82,7 +149,7 @@ export default function DashboardPage() {
           </div>
 
           <h3 className="mt-2 text-xl font-bold">
-            -45,000 XOF
+           -{Number(stats?.total_sent).toLocaleString()} XOF
           </h3>
         </div>
 
@@ -96,7 +163,7 @@ export default function DashboardPage() {
           </div>
 
           <h3 className="mt-2 text-xl font-bold">
-            +120,000 XOF
+          +{Number(stats?.total_received).toLocaleString()} XOF
           </h3>
         </div>
 
@@ -125,6 +192,12 @@ export default function DashboardPage() {
 
         <div className="space-y-4">
 
+          {transactions.length === 0 && (
+            <p className="text-sm text-gray-500">
+              Aucune transaction trouvée
+            </p>
+          )}
+
           {transactions.map((tx) => (
             <div
               key={tx.id}
@@ -133,23 +206,29 @@ export default function DashboardPage() {
 
               <div>
                 <p className="font-medium capitalize text-gray-800">
-                  {tx.type}
+                  {tx.transaction_type}
                 </p>
 
                 <p className="text-xs text-gray-500">
-                  {tx.date}
+                  {new Date(
+                    tx.created_at
+                  ).toLocaleDateString()}
                 </p>
               </div>
 
               <div
                 className={`font-semibold ${
-                  tx.type === "deposit"
-                    ? "text-green-600"
-                    : "text-red-500"
+                  tx.sender === user.username
+                    ? "text-red-500"
+                    : "text-green-600"
                 }`}
               >
-                {tx.type === "deposit" ? "+" : "-"}
-                {tx.amount.toLocaleString()} XOF
+                {tx.sender === user.username
+                  ? "-"
+                  : "+"}
+
+                {Number(tx.amount).toLocaleString()}{" "}
+                XOF
               </div>
 
             </div>

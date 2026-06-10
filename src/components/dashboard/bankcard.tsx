@@ -1,19 +1,37 @@
-// components/dashboard/bank-card.tsx
-
 "use client"
+
+import { useEffect, useState } from "react"
 
 import {
   Wifi,
   CreditCard,
 } from "lucide-react"
 
-import { getCurrentUser } from "@/lib/auth"
+import {
+  getCurrentUser,
+} from "@/lib/auth"
+
+import type { User } from "@/lib/auth"
 
 export default function BankCard() {
-  const user = getCurrentUser()
+  const [user, setUser] =
+    useState<User | null>(null)
+
+  useEffect(() => {
+    async function fetchUser() {
+      const currentUser =
+        await getCurrentUser()
+
+      setUser(currentUser)
+    }
+
+    fetchUser()
+  }, [])
 
   const cardHolder =
-    user?.email?.split("@")[0]?.toUpperCase() ||
+    user?.email
+      ?.split("@")[0]
+      ?.toUpperCase() ||
     "YETUBANK USER"
 
   const balance = 125000
@@ -21,15 +39,12 @@ export default function BankCard() {
   return (
     <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-black via-gray-900 to-green-700 p-7 text-white shadow-2xl">
 
-      {/* BACKGROUND GLOW */}
       <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
 
       <div className="absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-green-400/20 blur-3xl" />
 
-      {/* CARD CONTENT */}
       <div className="relative z-10 flex h-full flex-col justify-between">
 
-        {/* TOP */}
         <div className="flex items-start justify-between">
 
           <div>
@@ -52,14 +67,12 @@ export default function BankCard() {
 
         </div>
 
-        {/* CARD NUMBER */}
         <div className="mt-10">
           <p className="text-lg tracking-[0.3em] text-white/90">
             5356 •••• •••• 4589
           </p>
         </div>
 
-        {/* BOTTOM */}
         <div className="mt-8 flex items-end justify-between">
 
           <div>
@@ -82,7 +95,6 @@ export default function BankCard() {
             </p>
           </div>
 
-          {/* VISA */}
           <div>
             <p className="text-2xl font-bold italic tracking-tight">
               VISA
