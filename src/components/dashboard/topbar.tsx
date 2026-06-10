@@ -1,13 +1,19 @@
-// components/dashboard/topbar.tsx
-
 "use client"
 
-import { Bell, LogOut, Search } from "lucide-react"
+import { useEffect, useState } from "react"
+
+import {
+  Bell,
+  LogOut,
+  Search,
+} from "lucide-react"
 
 import {
   getCurrentUser,
   logoutUser,
 } from "@/lib/auth"
+
+import type { User } from "@/lib/auth"
 
 import { useRouter } from "next/navigation"
 
@@ -22,7 +28,19 @@ import { Input } from "@/components/ui/input"
 export default function Topbar() {
   const router = useRouter()
 
-  const user = getCurrentUser()
+  const [user, setUser] =
+    useState<User | null>(null)
+
+  useEffect(() => {
+    async function fetchUser() {
+      const currentUser =
+        await getCurrentUser()
+
+      setUser(currentUser)
+    }
+
+    fetchUser()
+  }, [])
 
   const handleLogout = () => {
     logoutUser()
@@ -39,7 +57,6 @@ export default function Topbar() {
       {/* LEFT */}
       <div className="flex items-center gap-4">
 
-        {/* SEARCH */}
         <div className="relative hidden md:block">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
 
@@ -54,16 +71,12 @@ export default function Topbar() {
       {/* RIGHT */}
       <div className="flex items-center gap-4">
 
-        {/* NOTIFICATIONS */}
-        <button
-          className="relative flex h-11 w-11 items-center justify-center rounded-xl border border-gray-200 bg-white transition hover:bg-gray-50"
-        >
+        <button className="relative flex h-11 w-11 items-center justify-center rounded-xl border border-gray-200 bg-white transition hover:bg-gray-50">
           <Bell className="h-5 w-5 text-gray-700" />
 
           <span className="absolute right-3 top-3 h-2 w-2 rounded-full bg-green-500" />
         </button>
 
-        {/* USER */}
         <div className="hidden items-center gap-3 md:flex">
 
           <Avatar className="h-10 w-10">
@@ -84,7 +97,6 @@ export default function Topbar() {
 
         </div>
 
-        {/* LOGOUT */}
         <Button
           variant="outline"
           onClick={handleLogout}

@@ -1,88 +1,90 @@
+"use client"
+
+import { useEffect, useState } from "react"
+
 import {
-  ArrowDownRight,
-  ArrowUpRight,
-  Wallet,
-} from "lucide-react"
+  getTransactions,
+  getCurrentUser,
+} from "@/lib/auth"
 
-import TransactionTable from "@/components/dashboard/transaction-table"
+import type {
+  Transaction,
+  User,
+} from "@/lib/auth"
 
-export default function TransactionsPage() {
+export default function TransactionTable() {
+  const [transactions, setTransactions] =
+    useState<Transaction[]>([])
+
+  const [user, setUser] =
+    useState<User | null>(null)
+
+  useEffect(() => {
+    async function fetchData() {
+      const txs =
+        await getTransactions()
+
+      const currentUser =
+        await getCurrentUser()
+
+      setTransactions(txs)
+      setUser(currentUser)
+    }
+
+    fetchData()
+  }, [])
+
   return (
-    <div className="space-y-8">
+    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
 
-      {/* HEADER */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">
-          Transactions
-        </h1>
+      <h2 className="mb-6 text-lg font-semibold text-gray-900">
+        Historique des transactions
+      </h2>
 
-        <p className="mt-1 text-gray-500">
-          Consultez l’historique complet de vos transactions.
+      {transactions.length === 0 ? (
+        <p className="text-sm text-gray-500">
+          Aucune transaction trouvée.
         </p>
-      </div>
+      ) : (
+        <div className="space-y-4">
 
-      {/* STATS */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {transactions.map((tx) => (
+            <div
+              key={tx.id}
+              className="flex items-center justify-between border-b pb-4 last:border-none"
+            >
 
-        {/* TOTAL REVENUS */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500">
-              Revenus
-            </p>
+              <div>
+                <p className="font-medium capitalize text-gray-900">
+                  {tx.transaction_type}
+                </p>
 
-            <div className="rounded-xl bg-green-100 p-2">
-              <ArrowDownRight className="h-5 w-5 text-green-600" />
+                <p className="text-sm text-gray-500">
+                  {new Date(
+                    tx.created_at
+                  ).toLocaleDateString()}
+                </p>
+              </div>
+
+              <div
+                className={`font-semibold ${
+                  tx.sender === user?.username
+                    ? "text-red-500"
+                    : "text-green-600"
+                }`}
+              >
+                {tx.sender === user?.username
+                  ? "-"
+                  : "+"}
+
+                {Number(tx.amount).toLocaleString()} XOF
+              </div>
+
             </div>
-          </div>
+          ))}
 
-          <h2 className="mt-4 text-2xl font-bold text-gray-900">
-            +120,000 XOF
-          </h2>
         </div>
-
-        {/* TOTAL DEPENSES */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500">
-              Dépenses
-            </p>
-
-            <div className="rounded-xl bg-red-100 p-2">
-              <ArrowUpRight className="h-5 w-5 text-red-500" />
-            </div>
-          </div>
-
-          <h2 className="mt-4 text-2xl font-bold text-gray-900">
-            -45,000 XOF
-          </h2>
-        </div>
-
-        {/* SOLDE */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500">
-              Solde actuel
-            </p>
-
-            <div className="rounded-xl bg-blue-100 p-2">
-              <Wallet className="h-5 w-5 text-blue-600" />
-            </div>
-          </div>
-
-          <h2 className="mt-4 text-2xl font-bold text-gray-900">
-            125,000 XOF
-          </h2>
-        </div>
-
-      </div>
-
-      {/* TRANSACTIONS TABLE */}
-      <TransactionTable />
-
+      )}
     </div>
   )
 }

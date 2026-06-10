@@ -1,91 +1,262 @@
-// lib/auth.ts
+const API_URL = "http://127.0.0.1:8000/api"
 
-export interface User {
-  id: string
+export type User = {
+  id: number
+  username: string
   email: string
 }
 
-const STORAGE_KEY = "yetubank-user"
+export type Account = {
+  username: string
+  email: string
+  balance: number
+  currency: string
+}
 
-/**
- * Simule une inscription utilisateur
- */
+export type Transaction = {
+  id: number
+  sender: string
+  receiver: string
+  amount: string
+  transaction_type: string
+  created_at: string
+}
+
+export type DashboardStats = {
+  balance: number
+  total_sent: number
+  total_received: number
+  transaction_count: number
+}
+
+/* =========================
+   REGISTER
+========================= */
+
 export async function registerUser(
   email: string,
   password: string
-): Promise<User> {
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+) {
+  const username = email.split("@")[0]
 
-  const user: User = {
-    id: crypto.randomUUID(),
-    email,
-  }
-
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(user)
+  const response = await fetch(
+    `${API_URL}/auth/register/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+      }),
+    }
   )
 
-  return user
+  if (!response.ok) {
+    throw new Error("Erreur inscription")
+  }
+
+  return response.json()
 }
 
-/**
- * Simule une connexion utilisateur
- */
+/* =========================
+   LOGIN
+========================= */
+
 export async function loginUser(
   email: string,
   password: string
-): Promise<User> {
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+) {
+  const username = email.split("@")[0]
 
-  const user: User = {
-    id: crypto.randomUUID(),
-    email,
-  }
-
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(user)
+  const response = await fetch(
+    `${API_URL}/auth/login/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    }
   )
 
-  return user
+  if (!response.ok) {
+    throw new Error("Erreur connexion")
+  }
+
+  const data = await response.json()
+
+  if (typeof window !== "undefined") {
+    localStorage.setItem(
+      "access_token",
+      data.access
+    )
+
+    localStorage.setItem(
+      "refresh_token",
+      data.refresh
+    )
+  }
+
+  return data
 }
 
-/**
- * Récupère utilisateur connecté
- */
-export function getCurrentUser(): User | null {
+/* =========================
+   GET CURRENT USER
+========================= */
+
+export async function getCurrentUser() {
   if (typeof window === "undefined") {
     return null
   }
 
-  const storedUser = localStorage.getItem(STORAGE_KEY)
+  const token =
+    localStorage.getItem("access_token")
 
-  if (!storedUser) {
+  if (!token) {
     return null
   }
 
-  try {
-    const parsedUser: User = JSON.parse(storedUser)
+  const response = await fetch(
+    `${API_URL}/auth/me/`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  )
 
-    return parsedUser
-  } catch (error) {
-    console.error("Erreur parsing user:", error)
-
+  if (!response.ok) {
     return null
+  }
+
+  return response.json()
+}
+
+/* =========================
+   LOGOUT
+========================= */
+
+export function logoutUser() {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem(
+      "access_token"
+    )
+
+    localStorage.removeItem(
+      "refresh_token"
+    )
+
+    window.location.href = "/auth/login"
   }
 }
 
-/**
- * Vérifie authentification
- */
-export function isAuthenticated(): boolean {
-  return getCurrentUser() !== null
+/* =========================
+   GET ACCOUNT
+========================= */
+
+export async function getAccount() {
+  if (typeof window === "undefined") {
+    return null
+  }
+
+  const token =
+    localStorage.getItem("access_token")
+
+  if (!token) {
+    return null
+  }
+
+  const response = await fetch(
+    `${API_URL}/account/me/`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  )
+
+  if (!response.ok) {
+    console.log(await response.text())
+
+    throw new Error(
+      "Erreur récupération compte"
+    )
+  }
+
+  return response.json()
 }
 
-/**
- * Déconnexion utilisateur
- */
-export function logoutUser(): void {
-  localStorage.removeItem(STORAGE_KEY)
+/* =========================
+   GET TRANSACTIONS
+========================= */
+
+export async function getTransactions() {
+  if (typeof window === "undefined") {
+    return []
+  }
+
+  const token =
+    localStorage.getItem("access_token")
+
+  if (!token) {
+    return []
+  }
+
+  const response = await fetch(
+    `${API_URL}/transactions/`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  )
+
+  if (!response.ok) {
+    throw new Error(
+      "Erreur récupération transactions"
+    )
+  }
+
+  return response.json()
+}
+
+
+/* =========================
+   GET DASHBOARD STATS
+========================= */
+
+export async function getDashboardStats() {
+  if (typeof window === "undefined") {
+    return null
+  }
+
+  const token =
+    localStorage.getItem("access_token")
+
+  if (!token) {
+    return null
+  }
+
+  const response = await fetch(
+    `${API_URL}/dashboard/stats/`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  )
+
+  if (!response.ok) {
+    throw new Error(
+      "Erreur récupération statistiques"
+    )
+  }
+
+  return response.json()
 }
